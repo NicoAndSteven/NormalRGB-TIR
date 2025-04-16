@@ -232,14 +232,36 @@ def load_vgg16(model_dir):
     # If .pth file doesn't exist, download it
     if not os.path.exists(pth_path):
         # Download the pre-trained VGG16 model from PyTorch's model zoo
-        vgg = models.vgg16(pretrained=True)
+        vgg_model = models.vgg16(pretrained=True)
         # Save only the features part (convolutional layers)
-        torch.save(vgg.features.state_dict(), pth_path)
+        torch.save(vgg_model.features.state_dict(), pth_path)
     
     # Load the model
     vgg = Vgg16()
-    # Load only the convolutional layers' weights
-    vgg.load_state_dict(torch.load(pth_path))
+    
+    # Load the state dict and handle key name differences
+    state_dict = torch.load(pth_path)
+    new_state_dict = {}
+    
+    # Mapping from sequential indices to the layer names in our Vgg16 class
+    vgg_layers = {
+        '0': 'conv1_1', '2': 'conv1_2', 
+        '5': 'conv2_1', '7': 'conv2_2',
+        '10': 'conv3_1', '12': 'conv3_2', '14': 'conv3_3',
+        '17': 'conv4_1', '19': 'conv4_2', '21': 'conv4_3',
+        '24': 'conv5_1', '26': 'conv5_2', '28': 'conv5_3'
+    }
+    
+    # Transform state_dict keys to match our model
+    for k, v in state_dict.items():
+        layer_idx = k.split('.')[0]
+        param_type = k.split('.')[-1]  # 'weight' or 'bias'
+        if layer_idx in vgg_layers:
+            new_key = f"{vgg_layers[layer_idx]}.{param_type}"
+            new_state_dict[new_key] = v
+    
+    # Load the transformed state dict
+    vgg.load_state_dict(new_state_dict)
     return vgg
 
 def load_inception(model_path):
