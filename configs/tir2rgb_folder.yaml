@@ -52,7 +52,9 @@ new_size_a: 640
 new_size_b: 400
 # number of data loading threads
 #new_size: 256                               # first resize the shortest image side to this size
-crop_image_height: 400                     # random crop image of this height
+crop_image_height: 512                     # random crop image of this height
 crop_image_width: 640                      # random crop image of this width
-data_root: /root/sRGB-TIR/    # dataset folder location
-vgg_model_path: /root/sRGB-TIR/
+# data_root: /root/sRGB-TIR/    # dataset folder location
+# vgg_model_path: /root/sRGB-TIR/
+data_root: /kaggle/input/filr1700/F1700     # dataset folder location
+vgg_model_path: /kaggle/working
