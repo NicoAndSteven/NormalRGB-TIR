@@ -50,7 +50,7 @@ class MUNIT_Trainer(nn.Module):
 
         # Load VGG model if needed
         if 'vgg_w' in hyperparameters.keys() and hyperparameters['vgg_w'] > 0:
-            self.vgg = load_vgg16("/home/hri/PycharmProjects/Thermal_optical_flow/MUNIT/models/")
+            self.vgg = load_vgg16("./models/")
             self.vgg.eval()
             for param in self.vgg.parameters():
                 param.requires_grad = False
